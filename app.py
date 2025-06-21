@@ -8,7 +8,7 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///leads.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////var/data/leads.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

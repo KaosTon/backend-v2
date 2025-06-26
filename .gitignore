@@ -1,0 +1,31 @@
+# Cache do Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Banco de dados local
+*.db
+*.sqlite3
+instance/
+leads.db
+
+# Ambiente
+.env
+.env.*
+
+# Alembic (migrations)
+migrations/versions/*.pyc
+migrations/__pycache__/
+
+# Editor de código
+.vscode/
+*.swp
+*.swo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

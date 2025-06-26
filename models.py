@@ -31,6 +31,30 @@ class Lead(db.Model):
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     corretor_id = db.Column(db.Integer, db.ForeignKey('corretor.id'))
 
+    # ✅ NOVO MÉTODO: to_dict() para serialização do objeto Lead para JSON
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "origem": self.origem,
+            "nome": self.nome,
+            "telefone": self.telefone,
+            "email": self.email,
+            "cidade": self.cidade,
+            "idade": self.idade,
+            "plano_atual": self.plano_atual,
+            "cnpj": self.cnpj,
+            "cpf": self.cpf,
+            "observacoes": self.observacoes,
+            "status": self.status,
+            # Converte a string de etiquetas (armazenada no DB) para uma lista no retorno JSON,
+            # como o frontend espera para manipulação. Se for None, retorna uma lista vazia.
+            "etiquetas": self.etiquetas.split(', ') if self.etiquetas else [],
+            # Retorna a data no formato ISO 8601 (string), que é fácil de usar no JavaScript.
+            # O nome da chave é "data" para corresponder ao que o frontend espera.
+            "data": self.data_criacao.isoformat(),
+            "corretor_id": self.corretor_id,
+        }
+
 class Etiqueta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50), nullable=False)

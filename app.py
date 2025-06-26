@@ -1,7 +1,9 @@
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_jwt_extended import JWTManager # ✅ Importe JWTManager
+
 from models import db, Lead, Corretor, Etiqueta, LeadEtiqueta
 
 # Blueprints
@@ -18,18 +20,24 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'leads.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db.init_app(app)
+migrate = Migrate(app, db)
 
-# Registro de Blueprints e inicialização
+app.config["JWT_SECRET_KEY"] = "virtus-super-secret-key"  # ✅ Adicione sua chave secreta aqui
+jwt = JWTManager(app) # ✅ Inicialize o JWTManager
+
+# Registro de Blueprints
+app.register_blueprint(routes_leads)
+app.register_blueprint(routes_corretores)
+app.register_blueprint(routes_etiquetas)
+app.register_blueprint(auth_bp)
+
 if __name__ == "__main__":
-    app.register_blueprint(routes_leads)
-    app.register_blueprint(routes_corretores)
-    app.register_blueprint(routes_etiquetas)
-    app.register_blueprint(auth_bp)
-
-    with app.app_context():
-        from models import db  # Garante que o db está sendo importado no contexto certo
-        db.create_all()
-        print("✅ Banco criado com sucesso!")
+    # Lembre-se: db.create_all() deve ser removido ou usado apenas para criar o DB inicial
+    # e não para migrações contínuas. As migrações (`flask db upgrade`) lidam com atualizações.
+    # with app.app_context():
+    #     db.create_all()
+    #     print("✅ Banco criado com sucesso!")
 
     app.run(debug=True)
